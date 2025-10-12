@@ -20,4 +20,23 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  polls     Poll[]   @relation("userPolls")
+}
+
+model Poll {
+  id        String    @id @default(uuid())
+  title     String
+  options   Option[]  @relation("pollOptions")
+  createdAt DateTime  @default(now())
+  expiredAt DateTime?
+  allowAnon Boolean   @default(true)
+  creator   User      @relation("userPolls", fields: [creatorID], references: [id])
+  creatorID String
+}
+
+model Option {
+  id     String @id @default(uuid())
+  text   String
+  poll   Poll   @relation("pollOptions", fields: [pollId], references: [id])
+  pollId String
 }
