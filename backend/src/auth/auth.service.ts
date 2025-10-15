@@ -4,12 +4,14 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { User } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(
@@ -31,17 +33,26 @@ export class AuthService {
     return userWithoutPassword;
   }
 
-  async login(loginUserDto: LoginUserDto) {
+  async login(
+    loginUserDto: LoginUserDto,
+  ): Promise<{ access_token: string; user: Omit<User, 'password'> }> {
     const user = await this.validateUser(
       loginUserDto.email,
       loginUserDto.password,
     );
-
-    const payload = { sub: user.id, email: user.email };
+    const access_token = await this.jwtSign(user.id, user.email);
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
       user,
     };
+  }
+
+  async jwtSign(id: string, email: string): Promise<string> {
+    const payload = { sub: id, email };
+    return this.jwtService.signAsync(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRES_IN'),
+      secret: this.configService.get('JWT_SECRET'),
+    });
   }
 }
