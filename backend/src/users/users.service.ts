@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -16,14 +18,14 @@ export class UsersService {
     });
   }
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
+    const { password, ...rest } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
     return this.prisma.user.create({
-      // data: {
-      //   name: createUserDto.name,
-      //   email: createUserDto.email,
-      //   password: createUserDto.password,
-      // },
-      data: createUserDto,
+      data: {
+        ...rest,
+        password: hashedPassword,
+      },
     });
   }
 
@@ -37,6 +39,12 @@ export class UsersService {
   remove(id: string) {
     return this.prisma.user.delete({
       where: { id },
+    });
+  }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
     });
   }
 }
