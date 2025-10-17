@@ -21,6 +21,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   polls     Poll[]   @relation("userPolls")
+  Vote      Vote[]   @relation("userVotes")
 }
 
 model Poll {
@@ -39,4 +40,16 @@ model Option {
   text   String
   poll   Poll   @relation("pollOptions", fields: [pollId], references: [id], onDelete: Cascade)
   pollId String
+  votes  Vote[] @relation()
+}
+
+model Vote {
+  id       String   @id @default(uuid())
+  user     User?    @relation("userVotes", fields: [voterID], references: [id])
+  voterID  String?
+  option   Option   @relation(fields: [optionId], references: [id])
+  optionId String
+  votedAt  DateTime
+
+  @@unique([voterID, optionId])
 }
