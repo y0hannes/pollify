@@ -37,6 +37,6 @@ model Poll {
 model Option {
   id     String @id @default(uuid())
   text   String
-  poll   Poll   @relation("pollOptions", fields: [pollId], references: [id])
+  poll   Poll   @relation("pollOptions", fields: [pollId], references: [id], onDelete: Cascade)
   pollId String
 }

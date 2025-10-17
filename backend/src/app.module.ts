@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
-// import { PollsModule } from './polls/polls.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PollsModule } from './polls/polls.module';
 
 @Module({
-  // imports: [UsersModule, PrismaModule, PollsModule, AuthModule],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -14,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     PrismaModule,
     AuthModule,
+    PollsModule,
   ],
   controllers: [],
   providers: [],
