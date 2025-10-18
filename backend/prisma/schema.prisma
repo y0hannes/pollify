@@ -45,11 +45,11 @@ model Option {
 
 model Vote {
   id       String   @id @default(uuid())
-  user     User?    @relation("userVotes", fields: [voterID], references: [id])
-  voterID  String?
+  user     User?    @relation("userVotes", fields: [voterId], references: [id])
+  voterId  String?
   option   Option   @relation(fields: [optionId], references: [id])
   optionId String
-  votedAt  DateTime
+  votedAt  DateTime @default(now())
 
-  @@unique([voterID, optionId])
+  @@unique([voterId, optionId])
 }
