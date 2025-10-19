@@ -33,6 +33,7 @@ model Poll {
   allowAnon Boolean   @default(true)
   creator   User      @relation("userPolls", fields: [creatorID], references: [id])
   creatorID String
+  Vote      Vote[]
 }
 
 model Option {
@@ -50,6 +51,8 @@ model Vote {
   option   Option   @relation(fields: [optionId], references: [id])
   optionId String
   votedAt  DateTime @default(now())
+  poll     Poll     @relation(fields: [pollId], references: [id])
+  pollId   String
 
   @@unique([voterId, optionId])
 }
