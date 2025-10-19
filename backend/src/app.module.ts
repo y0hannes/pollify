@@ -4,6 +4,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PollsModule } from './polls/polls.module';
+import { VoteModule } from './vote/vote.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PollsModule } from './polls/polls.module';
     PrismaModule,
     AuthModule,
     PollsModule,
+    VoteModule,
   ],
   controllers: [],
   providers: [],
